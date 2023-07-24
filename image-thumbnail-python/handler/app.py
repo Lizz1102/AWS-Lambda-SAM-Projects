@@ -38,6 +38,10 @@ def get_s3_image(bucket, key):
 def image_to_thumbnail(image):
     return ImageOps.fit(image, (size, size), Image.ANTIALIAS)
 
+def new_filename(key):
+    key_split = key.rsplit('.', 1)
+    return key_split[0] + "_thumbnail.png"
+
 def upload_to_s3(bucket, key, image, img_size):
     out_thumbnail = BytesIO()
 
@@ -51,7 +55,6 @@ def upload_to_s3(bucket, key, image, img_size):
         ContentType='image/png',
         Key=key
     )
-
     print(response)
 
     url = '{}/{}/{}'.format(s3.meta.endpoint_url, bucket, key)
@@ -59,15 +62,3 @@ def upload_to_s3(bucket, key, image, img_size):
     # s3_save_thumbnail_url_to_dynamo(url_path=url, img_size=img_size)
 
     return url
-
-def new_filename(key):
-    key_split = key.rsplit('.', 1)
-    return key_split[0] + "_thumbnail.png"
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }

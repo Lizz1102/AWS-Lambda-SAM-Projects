@@ -5,7 +5,6 @@ Description: >
 
   Sample SAM Template for image-thumbnail-python
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 60
@@ -40,13 +39,13 @@ Resources:
   SrcBucket:
     Type: AWS::S3::Bucket
 
-Outputs:
-  ThumbnailApi:
-    Description: "API Gateway endpoint URL for Prod stage for Thumbnail Generator function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/images/"
-  CreateThumbnailFunction:
-    Description: "CreateThumbnailFunction Lambda Function ARN"
-    Value: !GetAtt CreateThumbnailFunction.Arn
+# Outputs:
+#   ThumbnailApi:
+#     Description: "API Gateway endpoint URL for Prod stage for Thumbnail Generator function"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/images/"
+#   CreateThumbnailFunction:
+#     Description: "CreateThumbnailFunction Lambda Function ARN"
+#     Value: !GetAtt CreateThumbnailFunction.Arn
   # HelloWorldFunctionIamRole:
   #   Description: "Implicit IAM Role created for Hello World function"
   #   Value: !GetAtt HelloWorldFunctionRole.Arn
