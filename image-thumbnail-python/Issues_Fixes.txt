@@ -1,0 +1,9 @@
+[ERROR] Runtime.ImportModuleError: Unable to import module 'app': cannot import name 'DEFAULT_CIPHERS' from 'urllib3.util.ssl_' (/var/task/urllib3/util/ssl_.py)
+Traceback (most recent call last):
+
+
+
+
+pip uninstall PIL   
+pip uninstall Pillow
+pip install Pillow  
