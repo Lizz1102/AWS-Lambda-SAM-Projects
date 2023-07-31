@@ -27,6 +27,8 @@ Resources:
     Properties:
       Handler: app.handler_s3_thumbnail_generator
       Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ImagesDynamoDBTable
         - Version: "2012-10-17"
           Statement:
             - Effect: Allow
