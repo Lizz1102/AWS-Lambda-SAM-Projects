@@ -1,0 +1,5 @@
+commands in vs code terminal: 
+	- sam build
+	- sam deploy --guided
+	- clear
+	- sam delete # Empty bucket first  
