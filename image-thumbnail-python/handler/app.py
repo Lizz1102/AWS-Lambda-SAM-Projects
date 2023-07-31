@@ -83,3 +83,18 @@ def s3_save_thumbnail_url_to_dynamo(url_path, img_size):
         'headers': {'Content-Type': 'application/json'},
         'body': json.dumps(response)
     }
+
+def handler_s3_get_thumbnail_urls(event, context):
+    table = dynamodb.Table(dbtable)
+    response = table.scan()
+    data = response['Items']
+    #paginate 
+    while 'LastEvaluatedKey' in response:
+        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        data.expand(response['Items'])
+
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps(data)
+    }

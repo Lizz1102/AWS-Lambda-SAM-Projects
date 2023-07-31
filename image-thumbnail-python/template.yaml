@@ -40,6 +40,21 @@ Resources:
           Properties:
             Bucket: !Ref SrcBucket
             Events: s3:ObjectCreated:*
+
+  ListThumbnails:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.handler_s3_get_thumbnail_urls
+      Policies: 
+        - DynamoDBReadPolicy:
+            TableName: !Ref ImagesDynamoDBTable
+      Events:
+        ListThumbnailsEvent:
+          Type: Api
+          Properties:
+            Path: /images
+            Method: GET 
+      
   SrcBucket:
     Type: AWS::S3::Bucket
 
