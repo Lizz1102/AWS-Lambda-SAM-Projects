@@ -8,8 +8,11 @@ import json
 
 s3 = boto3.client('s3')
 size = int(os.getenv('THUMBNAIL_SIZE'))
+dbtable = str(os.getenv('DYNAMODB_TABLE'))
+dynamodb = boto3.resource(
+    'dynamodb', region_name=str(os.getenv('REGION_NAME')))
 
-def s3_thumbnail_generator(event, context):
+def handler_s3_thumbnail_generator(event, context):
     print("Event::", event)
 
     bucket = event['Records'][0]['s3']['bucket']['name']
@@ -59,6 +62,24 @@ def upload_to_s3(bucket, key, image, img_size):
 
     url = '{}/{}/{}'.format(s3.meta.endpoint_url, bucket, key)
 
-    # s3_save_thumbnail_url_to_dynamo(url_path=url, img_size=img_size)
+    s3_save_thumbnail_url_to_dynamo(url_path=url, img_size=img_size)
 
     return url
+def s3_save_thumbnail_url_to_dynamo(url_path, img_size):
+    toint = float(img_size*0.53)/1000
+    table = dynamodb.Table(dbtable)
+    response = table.put_item(
+        Item={
+            'id': str(uuid.uuid4()),
+            'url': str(url_path),
+            'approxReducedSize': str(toint) + str('KB'),
+            'createdAt': str(datetime.now()),
+            'updatedAt': str(datetime.now())
+        }
+    )
+
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps(response)
+    }
