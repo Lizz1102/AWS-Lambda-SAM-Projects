@@ -76,9 +76,8 @@ Resources:
     Properties:
       CodeUri: handler/
       Handler: listTasks.listTasks
-      Policies: 
-      
-        - DynamoDBCrudPolicy:
+      Policies:       
+        - DynamoDBReadPolicy:
             TableName: !Ref TaskTable 
       
       Events:
@@ -93,8 +92,7 @@ Resources:
     Properties:
       CodeUri: handler/
       Handler: updateTask.updateTask
-      Policies: 
-      
+      Policies:      
         - DynamoDBCrudPolicy:
             TableName: !Ref TaskTable 
       
