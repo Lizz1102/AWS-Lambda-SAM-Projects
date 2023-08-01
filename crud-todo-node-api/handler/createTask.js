@@ -1,7 +1,7 @@
-const AWS = require("aws-sdk");
+const DynamoDB = require("aws-sdk/clients/dynamodb");
 
 const TASK_TABLE = process.env.TASK_TABLE;
-const dynamoDb = new AWS.dynamoDB.DocumentClient();
+const dynamoDb = new DynamoDB.DocumentClient();
 const uuid = require("uuid");
 
 exports.createTask = async (event, context) => {
