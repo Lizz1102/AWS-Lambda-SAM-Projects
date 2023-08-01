@@ -1,0 +1,2 @@
+1. https://stackoverflow.com/questions/56070641/how-do-i-use-aws-in-a-javascript-module # Cannot read property 'DocumentClient' of undefined
+2. 
