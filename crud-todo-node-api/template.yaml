@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  crud-todo-node-api
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Runtime: nodejs14.x
+    Architectures:
+        - x86_64
+    Environment:
+      Variables:
+        TASK_TABLE: !Ref Table
+        REGION_NAME: !Ref Region
+Parameters:
+  Table:
+    Type: String
+    Default: Tasks
+  Region:
+    Type: String
+    Default: us-east-1
+
+Resources:
+  CreateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: createTask.createTask
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable 
+      
+      Events:
+        CreateTask:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: post
+
+  DeleteTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: deleteTask.deleteTask
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable 
+      
+      Events:
+        DeleteTask:
+          Type: Api 
+          Properties:
+            Path: /tasks/{id}
+            Method: delete  
+
+  GetTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: getTask.getTask
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable 
+      
+      Events:
+        GetTask:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: get 
+
+  ListTasksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: listTasks.listTasks
+      Policies: 
+      
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable 
+      
+      Events:
+        ListTasks:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: get 
+  
+  UpdateTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: updateTask.updateTask
+      Policies: 
+      
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TaskTable 
+      
+      Events:
+        UpdateTask:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: put
+
+  TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        #BillingMode: PAY_PER_REQUEST
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: !Ref Table
+Outputs:
+  TaskApi:
+    Description: "API Gateway endpoint URL for Prod stage for Tasks API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/tasks/"
+  CreateTaskFunction:
+    Description: "CreateTask Lambda Function ARN"
+    Value: !GetAtt CreateTaskFunction.Arn
+ 
