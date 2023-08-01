@@ -61,7 +61,7 @@ Resources:
       CodeUri: handler/
       Handler: getTask.getTask
       Policies: 
-        - DynamoDBCrudPolicy:
+        - DynamoDBReadPolicy:
             TableName: !Ref TaskTable 
       
       Events:
