@@ -1,0 +1,10 @@
+Postman post call (body,raw,JSON)
+{
+    "to": "lizz05110@gmail.com",
+    "from": "lizz05110@gmail.com",
+    "subject": "Simle email service testingg",
+    "message": "yo just testing hhheeheheh"
+}
+
+---error --> CloudWatch log --> AccessDenied: User  is not authorized to perform `ses:SendEmail' on resource `arn:aws:ses:us-east-1:915378173454:identity/kamrun.liza13@gmail.com' 
+    ----reason --> this email wasnt added in SES cli dashboard, all involved emails need to be verified 
