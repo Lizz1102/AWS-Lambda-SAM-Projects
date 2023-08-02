@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "simple-email-service"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1ispjlxpqay0n"
+s3_prefix = "simple-email-service"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

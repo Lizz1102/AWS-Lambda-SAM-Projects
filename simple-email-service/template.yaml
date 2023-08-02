@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  simple-email-service
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Runtime: nodejs14.x
+    Architectures:
+        - x86_64
+
+Resources:
+  CreateContactFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: handler/
+      Handler: app.createContact
+      Policies:
+        - SESCrudPolicy: 
+             IdentityName: VERIFIED_EMAIL_ID@gmail.com
+      Events:
+        CreateContact:
+          Type: Api 
+          Properties:
+            Path: /email-customer-care
+            Method: post
+            
+
+Outputs:
+  CreateContactApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/email-customer-care/"
+  CreateContactFunction:
+    Description: "Create Contact Lambda Function ARN"
+    Value: !GetAtt CreateContactFunction.Arn
+ 
