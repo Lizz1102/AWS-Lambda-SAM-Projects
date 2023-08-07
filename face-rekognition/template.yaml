@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  face-rekognition-test
+
+  Sample SAM Template for face-rekognition-test
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Layers:
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p39-pillow:1
+    Environment:
+      Variables:
+        DYNAMODB_TABLE: !Ref Table
+        REGION_NAME: !Ref Region
+
+Parameters:
+  Table:
+    Type: String
+    Default: Faces
+  Region:
+    Type: String
+    Default: us-east-1
+Resources:
+  AddFaceRekognitionFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: handler/
+      Description: An Amazon S3 trigger that uses rekognition APIs to detect faces
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table 
+        - Version: '2012-10-17' 
+          Statement:  # For upload to s3
+           - Effect: Allow
+             Action: 's3:*'
+             Resource: '*'
+           - Effect: Allow
+             Action:
+              - 'rekognition:CompareFaces'
+              - 'rekognition:DetectFaces'
+              - 'rekognition:DetectLabels'
+             Resource: '*'
+           - Effect: Allow
+             Action:
+               - 'rekognition:CreateCollection'
+               - 'rekognition:IndexFaces'
+             Resource: '*'
+             
+      Events:
+        AddFace:
+          Type: S3 
+          Properties:
+            Bucket: !Ref SrcBucket
+            Events: s3:ObjectCreated:*
+  ListFacesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/
+      Handler: app.list_faces
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies: 
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table 
+      Events:
+        ListFaces:
+          Type: Api 
+          Properties:
+            Path: /faces
+            Method: get
+
+  FacesTable:
+       Type: AWS::DynamoDB::Table
+       Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: !Ref Table
+  SrcBucket:
+    Type: AWS::S3::Bucket
+
+Outputs:
+  GetFacesFunction:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/faces/"
+
