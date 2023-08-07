@@ -76,18 +76,10 @@ def lambda_handler(event, context):
         # Calls rekognition DetectFaces API to detect faces in S3 object
         response = detect_faces(bucket, key)
 
-        # Calls rekognition DetectLabels API to detect labels in S3 object
-        #response = detect_labels(bucket, key)
-
-        # Calls rekognition IndexFaces API to detect faces in S3 object and index faces into specified collection
-        #response = index_faces(bucket, key)
-
-        # Print response to console.
         print(response)
         data = []
 
         for faceDetail in response['FaceDetails']:
-
             item = {
                 'id': str(uuid.uuid4()),
                 "dataType": "Emotions",
@@ -98,27 +90,20 @@ def lambda_handler(event, context):
             item["eyesopen"] = {
                 str(faceDetail['EyesOpen']['Value']): str(
                     faceDetail['EyesOpen']['Confidence'])
-
             }
-            # print('Emotions: \t Confidence\n')
             for emotion in faceDetail['Emotions']:
                 item[str(emotion['Type']).lower()] = str(emotion['Confidence'])
-
-                # print(str(emotion['Type']) + '\t\t' +
-                #       str(emotion['Confidence']))
             data.append(item)
 
         emotion_payload = json.dumps(data)
 
-        # SAVE PAYLOAD TO DYNAMODB
         table = dynamodb.Table(dbtable)
         print(item)
         response = table.put_item(
             Item=item
         )
-      # save_response_to_db(payload=emotion_payload)
 
-        print('::::==> ' + emotion_payload)
+        print('==> ' + emotion_payload)
         return response
     except Exception as e:
         print(e)
