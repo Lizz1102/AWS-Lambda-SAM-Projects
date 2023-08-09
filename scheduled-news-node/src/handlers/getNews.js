@@ -11,7 +11,7 @@ const Comprehend = new AWS.Comprehend();
 
 const axios = require("axios");
 const url_top_business =
-  "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=" +
+  "https://newsapi.org/v2/top-headlines?country=ca&category=business&apiKey=" +
   news_api_key;
 exports.getNews = async (event, context) => {
   let body;

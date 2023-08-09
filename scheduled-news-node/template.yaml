@@ -64,7 +64,7 @@ Resources:
 
       # This property associates this Lambda function with a scheduled CloudWatch Event. For all available properties, see
       # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#schedule
-      # This example runs every 24 hrs at 8am.
+      # This example runs every 24 hrs at 11am EDT
       Events:
         CloudWatchEvent:
           Type: Schedule
